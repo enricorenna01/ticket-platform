@@ -115,5 +115,14 @@ public class Ticket {
         this.operator = operator;
     }
 
+    @Override
+    public String toString(){
+        return "{" +
+            " id='" + getId() + "'" +
+            ", creationDate='" + getCreatedAt() + "'" +
+            ", title='" + getTitle() + "'" +
+            ", text='" + getDescription() + "'" +
+            "}";
+    }
 }
 
