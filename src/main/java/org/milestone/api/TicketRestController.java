@@ -24,12 +24,12 @@ public class TicketRestController {
         return service.findAll();
     }
  
-    @GetMapping("{category}")
+    @GetMapping("{category}/category")
     public List<Ticket> findByCategory(@RequestParam String category) {
         return service.findByCategory(category);
     }
  
-    @GetMapping("{state}")
+    @GetMapping("{state}/state")
     public List<Ticket> findByState(@RequestParam String state) {
         return service.findByState(state);
     }

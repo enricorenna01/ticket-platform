@@ -16,19 +16,19 @@ public class SecurityConfiguration {
     @SuppressWarnings("removal")
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests()
-        .requestMatchers("/ticket/create", "/ticket/*/delete").hasAuthority("ADMIN")
-        .requestMatchers("/ticket/*/edit").hasAnyAuthority("ADMIN", "OPERATOR")
-        .requestMatchers("/ticket", "/ticket/*").hasAnyAuthority("ADMIN", "OPERATOR")
-        .requestMatchers(HttpMethod.POST, "/note/create").hasAnyAuthority("ADMIN", "OPERATOR")
-        .requestMatchers(HttpMethod.POST, "/ticket/user/*/state").hasAnyAuthority("ADMIN", "OPERATOR")
-        .requestMatchers("/ticket/serach/*").hasAuthority("ADMIN")
-        .requestMatchers("/api/ticket", "/api/ticket/*/category", "/api/ticket/*/state").permitAll()
-        .requestMatchers("/*").permitAll()
-        .requestMatchers("/webjars/**").permitAll()
-        .and().formLogin()
-        .and().logout()
-        .and().exceptionHandling();
-        return http.build();
+         .requestMatchers("/ticket/create", "/ticket/*/delete").hasAuthority("ADMIN")
+         .requestMatchers("/ticket/*/edit").hasAnyAuthority("ADMIN", "OPERATOR")
+         .requestMatchers("/ticket", "/ticket/*").hasAnyAuthority("ADMIN", "OPERATOR")
+         .requestMatchers(HttpMethod.POST, "/note/create").hasAnyAuthority("ADMIN", "OPERATOR")
+         .requestMatchers(HttpMethod.POST, "/ticket/user/*/state").hasAnyAuthority("ADMIN", "OPERATOR")
+         .requestMatchers("/ticket/serach/*").hasAuthority("ADMIN")
+         .requestMatchers("/api/ticket", "/api/ticket/*/category", "/api/ticket/*/state").permitAll()
+         .requestMatchers("/*").permitAll()
+         .requestMatchers("/webjars/**").permitAll()
+         .and().formLogin()
+         .and().logout()
+         .and().exceptionHandling();
+         return http.build();
     }
 
     @Bean
