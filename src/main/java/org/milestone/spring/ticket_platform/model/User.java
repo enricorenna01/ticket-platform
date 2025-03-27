@@ -102,6 +102,14 @@ public class User {
         this.notes = notes;
     }
 
+    public boolean getState() {
+        return this.state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return "{" +
