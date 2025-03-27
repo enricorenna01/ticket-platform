@@ -24,21 +24,21 @@ public class User {
     @NotBlank(message = "Username can not be blank")
      private String username;
  
-     @NotBlank(message = "Password can not be blank")
+    @NotBlank(message = "Password can not be blank")
      private String password;
  
-     @ManyToMany
-     @JoinTable(
-         name = "role_user",
-         joinColumns = @JoinColumn(name = "user_id"),
-         inverseJoinColumns = @JoinColumn(name = "role_id")
-     )
-     private Set<UserRole> roles;
+    @ManyToMany
+    @JoinTable(
+        name = "role_user",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<UserRole> roles;
  
-     @OneToMany(mappedBy = "operator")
+    @OneToMany(mappedBy = "operator")
      private Set<Ticket> tickets;
  
-     @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author")
      private Set<Note> notes;
 
 
@@ -91,11 +91,11 @@ public class User {
     }
 
     @Override
-     public String toString() {
-         return "{" +
-             " id='" + getId() + "'" +
-             ", email='" + getUsername() + "'" +
-             ", password='" + getPassword() + "'" +
-             "}";
-     }
+    public String toString() {
+        return "{" +
+            " id='" + getId() + "'" +
+            ", email='" + getUsername() + "'" +
+            ", password='" + getPassword() + "'" +
+            "}";
+    }
 }

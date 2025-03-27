@@ -35,4 +35,8 @@ public class TicketService {
         ticket.setState(ticketStateService.findByName("to do"));
         return ticket;
      }
+
+     public void delete(Ticket ticket){
+        repository.delete(ticket);
+    }
 }

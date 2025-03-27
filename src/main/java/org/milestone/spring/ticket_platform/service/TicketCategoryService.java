@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
- public class TicketCategoryService {
+public class TicketCategoryService {
      
-     @Autowired
-     private TicketCategoryRepository repository;
+    @Autowired
+    private TicketCategoryRepository repository;
  
-     public List<TicketCategory> findAll(){
-         return repository.findAll();
-     }
+    public List<TicketCategory> findAll(){
+        return repository.findAll();
+    }
  }

@@ -47,13 +47,13 @@ public class TicketController {
     }
     
     @GetMapping("/create")
-     public String formTicket(Model model) {
-         model.addAttribute("ticket", ticketService.newTicket());
-         model.addAttribute("categories", categoryService.findAll());
-         model.addAttribute("users", userService.findAll());
-         model.addAttribute("toDoState", stateService.findByName("to do"));
-         return "tickets/create-edit";
-     }
+    public String formTicket(Model model) {
+        model.addAttribute("ticket", ticketService.newTicket());
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("toDoState", stateService.findByName("to do"));
+        return "tickets/create-edit";
+    }
      
     @PostMapping("/create")
     public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
@@ -68,18 +68,27 @@ public class TicketController {
         ticketService.save(formTicket);
          
         return "redirect:/ticket";
-     }
+    }
 
-     @GetMapping("/{id}")
-     public String showPizza(@PathVariable Integer id, Model model) {
-         Ticket ticket = ticketService.findById(id);
-         model.addAttribute("ticket", ticket);
-         model.addAttribute("user", ticket.getOperator());
-         model.addAttribute("state", ticket.getState().getName());
-         model.addAttribute("category", ticket.getCategory().getName());
-         System.out.println(ticket.getState().getName());
+    @GetMapping("/{id}")
+    public String showPizza(@PathVariable Integer id, Model model) {
+        Ticket ticket = ticketService.findById(id);
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("user", ticket.getOperator());
+        model.addAttribute("state", ticket.getState().getName());
+        model.addAttribute("category", ticket.getCategory().getName());
+        System.out.println(ticket.getState().getName());
  
-         return "tickets/show";
-     }
+        return "tickets/show";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id) {
+         
+        Ticket ticket = ticketService.findById(id);
+        ticketService.delete(ticket);
+ 
+        return "redirect:/ticket";
+    }
 }
 

@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
  public class TicketStateService {
      
  
-     @Autowired
-     private TicketStateRepository repository;
+    @Autowired
+    private TicketStateRepository repository;
      
  
-     public List<TicketState> findAll(){
-         return repository.findAll();
-     }
+    public List<TicketState> findAll(){
+        return repository.findAll();
+    }
 
-     public TicketState findByName(String name){
+    public TicketState findByName(String name){
         return repository.findByName(name).get();
     }
  }

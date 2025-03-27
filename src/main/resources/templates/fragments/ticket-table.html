@@ -31,6 +31,7 @@
                     <td th:text="*{creationDate}"></td>
                     <td>
                         <a type="button" class="btn btn-primary" th:href="@{|/ticket/*{id}/edit|}">Edit</a>
+                        <th:block th:replace="~{fragments/delete-modal :: delete-btn(${ticket})}"></th:block>
                     </td>
                 </tr>
             </tbody>

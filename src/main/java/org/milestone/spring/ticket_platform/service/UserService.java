@@ -9,16 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
- public class UserService {
+public class UserService {
      
-     @Autowired
-     private UserRepository repository;
+    @Autowired
+    private UserRepository repository;
  
-     public List<User> findAll(){
-         return repository.findAll();
-     }
+    public List<User> findAll(){
+        return repository.findAll();
+    }
 
-     public Optional<User> findById(Integer id){
+    public Optional<User> findById(Integer id){
         return repository.findById(id);
     }
  }

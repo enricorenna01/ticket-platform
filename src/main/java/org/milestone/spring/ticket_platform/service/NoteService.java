@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 public class NoteService {
     
     @Autowired
-     private NoteRepository repository;
+    private NoteRepository repository;
  
-     public void save(Note note){
-         repository.save(note);
-     }
+    public void save(Note note){
+        repository.save(note);
+    }
 }
