@@ -60,9 +60,9 @@ public class TicketController {
     public String formTicket(Model model) {
         model.addAttribute("ticket", ticketService.newTicket());
         model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("users", userService.findByState(true));
         model.addAttribute("toDoState", stateService.findByName("to do"));
-        return "tickets/create-edit";
+        return "tickets/create";
     }
      
     @PostMapping("/create")
@@ -71,9 +71,9 @@ public class TicketController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("ticket", formTicket);
             model.addAttribute("categories", categoryService.findAll());
-            model.addAttribute("users", userService.findAll());
+            model.addAttribute("users", userService.findByState(true));
             model.addAttribute("toDoState", stateService.findByName("to do"));
-            return "tickets/create-edit";
+            return "tickets/create";
         }
         ticketService.save(formTicket);
          
@@ -81,7 +81,7 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    public String showPizza(@PathVariable Integer id, Model model) {
+    public String show(@PathVariable Integer id, Model model) {
         Ticket ticket = ticketService.findById(id);
         model.addAttribute("ticket", ticket);
         model.addAttribute("user", ticket.getOperator());
@@ -92,12 +92,39 @@ public class TicketController {
         return "tickets/show";
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable Integer id) {
-         
         Ticket ticket = ticketService.findById(id);
         ticketService.delete(ticket);
+
+        return "redirect:/ticket";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable Integer id, Model model) {
+        Ticket ticket = ticketService.findById(id);
  
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("users", userService.findByState(true));
+        model.addAttribute("states", stateService.findAll());
+ 
+        return "tickets/edit";
+    }
+ 
+ 
+    @PostMapping("/edit")
+    public String edit(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("ticket", formTicket);
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("users", userService.findByState(true));
+            model.addAttribute("states", stateService.findAll());
+ 
+            return "tickets/edit";
+        };
+        ticketService.save(formTicket);
+         
         return "redirect:/ticket";
     }
 }

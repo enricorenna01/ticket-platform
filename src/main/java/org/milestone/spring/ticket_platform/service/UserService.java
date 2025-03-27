@@ -25,4 +25,8 @@ public class UserService {
     public Optional<User> findByUsername(String username){
         return repository.findByUsername(username);
     }
+
+    public List<User> findByState(boolean state){
+        return repository.findByState(state);
+    }
  }
