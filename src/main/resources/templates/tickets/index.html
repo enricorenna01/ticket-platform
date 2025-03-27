@@ -1,36 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head(title = 'tickets')}"></head>
+
 <body>
-    <head th:replace="~{fragments/head :: head(title = 'tickets')}"></head>
-    <h1>Lista dei Ticket</h1>
-    <table class="table mb-3">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>State</th>
-                <th>Operator</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="ticket : ${tickets}" th:object="${ticket}">
-                <td th:text="*{id}"></td>
-                <td th:text="*{title}"></td>
-                <td th:text="*{description}"></td>
-                <td th:text="*{category}"></td>
-                <td th:text="*{state}"></td>
-                <td th:text="*{operator}"></td>
-                <td th:text="*{createdAt}"></td>
-                <td th:text="*{updatedAt}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <h3 class="alert alert-warning" th:unless="${tickets.size() > 0}">
-        There are no tickets available at this moment... Try again later!
-    </h3>
+    <main class="container">
+        <section class="row">
+            <div class="col-12">
+                <h1>Lista dei Ticket</h1>
+                <div th:insert="~{fragments/ticket-table :: table}"></div>
+                <h3 class="alert alert-warning" th:unless="${tickets.size() > 0}">
+                    There are no tickets available at this moment... Try again later!
+                </h3>
+            </div>
+        </section>
+    </main>
 </body>
+
 </html>
