@@ -3,6 +3,7 @@ package org.milestone.spring.ticket_platform.model;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +28,7 @@ public class User {
     @NotBlank(message = "Password can not be blank")
      private String password;
  
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "role_user",
         joinColumns = @JoinColumn(name = "user_id"),
