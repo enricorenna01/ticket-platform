@@ -1,7 +1,9 @@
 package org.milestone.spring.ticket_platform.model;
 
+import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
@@ -37,10 +40,18 @@ public class User {
     private Set<UserRole> roles;
  
     @OneToMany(mappedBy = "operator")
-     private Set<Ticket> tickets;
+     private List<Ticket> tickets;
  
     @OneToMany(mappedBy = "author")
      private Set<Note> notes;
+    
+    @NotNull(message = "State can not be null")
+    @Column
+    private boolean state = true;
+
+    public boolean isAdmin(){
+        return this.roles.stream().anyMatch(role -> role.getName().equals("ADMIN"));
+    }
 
 
     public Integer getId() {
@@ -75,11 +86,11 @@ public class User {
         this.roles = roles;
     }
 
-    public Set<Ticket> getTickets() {
+    public List<Ticket> getTickets() {
         return this.tickets;
     }
 
-    public void setTickets(Set<Ticket> tickets) {
+    public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
     }
 
