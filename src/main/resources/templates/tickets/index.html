@@ -6,16 +6,53 @@
 <body>
     <main class="container">
         <div th:replace="~{fragments/navbar :: navbar}"></div>
-        <section class="row">
-            <div class="col-12">
-                <h1>Lista dei Ticket</h1>
-                <div th:insert="~{fragments/ticket-table :: table}"></div>
-                <h3 class="alert alert-warning" th:unless="${tickets.size() > 0}">
-                    There are no tickets available at this moment... Try again later!
-                </h3>
+        <div class="container mt-5">
+            <form class="d-flex" th:action="@{/ticket/search}" method="get" sec:authorize="hasAuthority('ADMIN')">
+                <input class="form-control form-control-sm me-2" type="search" placeholder="Search tickets by title" aria-label="Search" name="title" required>
+            </form>
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Tutti i Ticket</h1>
+                <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                        th:classappend="${user.state ? 'btn-success' : 'btn-danger'}"
+                        th:text="${user.state ? 'Available' : 'Not Available'}">
+                </button>
             </div>
-        </section>
-    </main>
-</body>
+        </div>
+        
+        <div th:insert="~{fragments/ticket-table :: table}"></div>
 
+        <div class="modal fade text-black" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+
+                <div class="modal-content" th:if="${canChange}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Are you shure you want to change state?
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    
+                        <form id="modalForm" th:action="@{|/ticket/user/${user.id}/state|}" method="post">
+                            <button type="submit" form="modalForm" class="btn btn-primary">Yes</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="modal-content" th:if="${!canChange}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Unfortunately you can not change State right now!
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
 </html>

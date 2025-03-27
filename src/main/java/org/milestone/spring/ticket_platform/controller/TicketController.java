@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
@@ -96,6 +97,8 @@ public class TicketController {
         newNote.setAuthor(user);
         
         Ticket ticket = ticketService.findById(id);
+
+        if(!ticketService.checkUser(user, ticket)) return "redirect:/ticket";
         
         model.addAttribute("ticket", ticket);
         model.addAttribute("user", ticket.getOperator());
@@ -163,5 +166,20 @@ public class TicketController {
         
         return "redirect:/ticket";
     }
+
+    @GetMapping("/search")
+     public String findByTitle(@RequestParam("title") String title, Authentication authentication, Model model) {
+         model.addAttribute("books", ticketService.findByTitle(title));
+ 
+         User user = userService.findByUsername(authentication.getName()).get();
+         List<Ticket> tickets;
+ 
+         tickets = ticketService.findByTitle(title);
+         
+         model.addAttribute("tickets", tickets);
+         model.addAttribute("user", user);
+         model.addAttribute("canChange", userService.canChange(user));
+         return "tickets/index";
+     }
 }
 

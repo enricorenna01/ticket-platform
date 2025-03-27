@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.milestone.spring.ticket_platform.model.Ticket;
+import org.milestone.spring.ticket_platform.model.User;
 import org.milestone.spring.ticket_platform.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,10 @@ public class TicketService {
 
     public List<Ticket> findByTitle(String title){
         return repository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public boolean checkUser(User user, Ticket ticket){
+        if (user.isAdmin() || ticket.getOperator().getId() == user.getId()) return true;
+        return false;
     }
 }
