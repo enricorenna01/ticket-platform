@@ -1,78 +1,95 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Document</title>
- </head>
- <body>
-     
-     <th:block th:fragment="form(crud)">
-         <div class="container mt-3">
-             <h2>Create Ticket</h2>
- 
-             
- 
- 
-             <form th:action="@{/ticket/create}" th:object="${ticket}" method="post">
-                 <div class="form-group mb-2">
-                     <label for="title">Title</label>
-                     <input type="text" class="form-control bg-dark text-white" id="title" th:field="*{title}" placeholder="Enter title" th:errorClass="is-invalid">
-                     <div th:if="${#fields.hasErrors('title')}" class="invalid-feedback">  	
-                         <ul>
-                             <li th:each="err : ${#fields.errors('title')}" th:text="${err}"></li>
-                         </ul>
-                     </div>
-                 </div>
-     
-                 <div class="form-group mb-2 d-none">
-                     <label for="creationDate">Creation Date</label>
-                     <input type="date" class="form-control bg-dark text-white" id="creationDate" th:field="*{creationDate}">
-                     <div th:if="${#fields.hasErrors('creationDate')}" class="text-danger">
-                         <span th:errors="*{creationDate}"></span>
-                     </div>
-                 </div>
-     
-                 <div class="form-group mb-2">
-                     <label for="text">Text</label>
-                     <textarea class="form-control bg-dark text-white" id="text" th:field="*{text}" rows="4" placeholder="Enter ticket description"></textarea>
-                     <div th:if="${#fields.hasErrors('text')}" class="text-danger">
-                         <span th:errors="*{text}"></span>
-                     </div>
-                 </div>
-     
-                 <div class="form-group mb-2">
-                     <label for="category">Category</label>
-                     <select class="form-control bg-dark text-white" id="category" th:field="*{category}">
-                         <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                     </select>
-                     <div th:if="${#fields.hasErrors('category')}" class="text-danger">
-                         <span th:errors="*{category}"></span>
-                     </div>
-                 </div>
-     
-                 <div class="form-group mb-2 d-none">
-                     <label for="state">State</label>
-                     <input class="form-control bg-dark text-white" id="state" th:field="*{state}" th:value="*{state}"></input>
-                     <div th:if="${#fields.hasErrors('state')}" class="text-danger">
-                         <span th:errors="*{state}"></span>
-                     </div>
-                 </div>
-     
-                 <div class="form-group mb-2">
-                     <label for="operator">Operator</label>
-                     <select class="form-control bg-dark text-white" id="operator" th:field="*{operator}">
-                         <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
-                     </select>
-                     <div th:if="${#fields.hasErrors('operator')}" class="text-danger">
-                         <span th:errors="*{operator}"></span>
-                     </div>
-                 </div>
-     
-                 <button type="submit" class="btn btn-primary">Create Ticket</button>
-             </form>
-         </div>
-     </th:block>
- 
- </body>
- </html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <th:block th:fragment="form(crud)">
+        <div th:object="${ticket}">
+            <div class="form-group mb-2">
+                <label for="title">Title</label>
+                <input type="text" class="form-control bg-dark text-white" id="title" th:field="*{title}"
+                    placeholder="Enter title" th:errorClass="is-invalid"
+                    th:readonly="${crud} == 'show' or ${!user.isAdmin()}">
+                <div th:if="${#fields.hasErrors('title')}" class="invalid-feedback">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('title')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="text">Text</label>
+                <textarea class="form-control bg-dark text-white" id="text" th:field="*{text}" rows="4"
+                    placeholder="Enter ticket description"
+                    th:readonly="${crud} == 'show' or ${!user.isAdmin()}"></textarea>
+                <div th:if="${#fields.hasErrors('text')}" class="text-danger">
+                    <span th:errors="*{text}"></span>
+                </div>
+            </div>
+
+            <div class="form-group mb-2" th:classappend="${crud} == 'create' ? 'd-none'">
+                <label for="creationDate">Creation Date</label>
+                <input type="date" class="form-control bg-dark text-white" id="creationDate" th:field="*{creationDate}"
+                    th:readonly="${crud} == 'show' or ${!user.isAdmin()}">
+                <div th:if="${#fields.hasErrors('creationDate')}" class="text-danger">
+                    <span th:errors="*{creationDate}"></span>
+                </div>
+            </div>
+
+            <div class="form-group mb-2">
+                <label for="category">Category</label>
+                <select class="form-control bg-dark text-white" id="category" th:field="*{category}"
+                    th:if="${crud == 'create' or (crud == 'edit' and user.isAdmin())}">
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">
+                    </option>
+                </select>
+                <div class="form-control bg-dark text-white" th:if="${crud} == 'show' or ${!user.isAdmin()}">
+                    [[*{category.name}]]</div>
+                <div th:if="${#fields.hasErrors('category')}" class="text-danger">
+                    <span th:errors="*{category}"></span>
+                </div>
+            </div>
+            <input type="hidden" th:field="*{category}" th:if="${!user.isAdmin()}">
+
+            <div class="form-group mb-2" th:classappend="${crud} == 'create' ? 'd-none'">
+                <label for="state">State</label>
+                <div class="form-control bg-dark text-white" th:if="${crud} == 'show'">[[${state}]]</div>
+                <select class="form-control bg-dark text-white" id="state" th:field="*{state}"
+                    th:if="${crud} == 'edit'">
+                    <option th:each="state : ${states}" th:value="${state.id}" th:text="${state.name}"></option>
+                </select>
+                <div th:if="${#fields.hasErrors('state')}" class="text-danger">
+                    <span th:errors="*{state}"></span>
+                </div>
+            </div>
+
+            <div class="form-group mb-2" sec:authorize="hasAuthority('ADMIN')">
+                <label for="operator">Operator</label>
+                <div class="form-control bg-dark text-white" th:if="${crud} == 'show'">[[*{operator.username}]]</div>
+                <select class="form-control bg-dark text-white" id="operator" th:field="*{operator}"
+                    th:if="${crud} == 'create' or ${crud} == 'edit'">
+                    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+                </select>
+                <div th:if="${#fields.hasErrors('operator')}" class="text-danger">
+                    <span th:errors="*{operator}"></span>
+                </div>
+            </div>
+            <input type="hidden" th:field="*{operator}" th:if="${!user.isAdmin()}">
+
+            <input type="hidden" th:field="*{id}">
+
+            <a type="button" class="btn btn-primary" th:href="@{|/ticket/*{id}/edit|}"
+                th:if="${crud} == 'show'">Edit</a>
+
+        </div>
+    </th:block>
+
+</body>
+
+</html>

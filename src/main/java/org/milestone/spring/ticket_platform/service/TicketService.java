@@ -18,17 +18,21 @@ public class TicketService {
      private TicketStateService ticketStateService;
 
     public List<Ticket> findAll(){
-         return repository.findAll();
-     }
- 
-     public void save(Ticket ticket){
-         repository.save(ticket);
-     }
+        return repository.findAll();
+    }
 
-     public Ticket newTicket(){
-         Ticket ticket = new Ticket();
-         ticket.setCreationDate(LocalDate.now());
-         ticket.setState(ticketStateService.findByName("to do"));
-         return ticket;
+    public Ticket findById(Integer id){
+        return repository.findById(id).get();
+    }
+ 
+    public void save(Ticket ticket){
+        repository.save(ticket);
+    }
+
+    public Ticket newTicket(){
+        Ticket ticket = new Ticket();
+        ticket.setCreationDate(LocalDate.now());
+        ticket.setState(ticketStateService.findByName("to do"));
+        return ticket;
      }
 }
