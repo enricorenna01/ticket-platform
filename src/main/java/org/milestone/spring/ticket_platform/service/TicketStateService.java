@@ -12,9 +12,14 @@ import org.springframework.stereotype.Service;
      
  
      @Autowired
-     private TicketStateRepository repo;
+     private TicketStateRepository repository;
+     
  
      public List<TicketState> findAll(){
-         return repo.findAll();
+         return repository.findAll();
      }
+
+     public TicketState findByName(String name){
+        return repository.findByName(name).get();
+    }
  }

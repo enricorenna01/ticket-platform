@@ -1,5 +1,6 @@
 package org.milestone.spring.ticket_platform.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.milestone.spring.ticket_platform.model.Ticket;
@@ -13,11 +14,21 @@ public class TicketService {
     @Autowired
     private TicketRepository repository;
 
+    @Autowired
+     private TicketStateService ticketStateService;
+
     public List<Ticket> findAll(){
          return repository.findAll();
      }
  
      public void save(Ticket ticket){
          repository.save(ticket);
+     }
+
+     public Ticket newTicket(){
+         Ticket ticket = new Ticket();
+         ticket.setCreationDate(LocalDate.now());
+         ticket.setState(ticketStateService.findByName("to do"));
+         return ticket;
      }
 }

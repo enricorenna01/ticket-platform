@@ -1,8 +1,7 @@
 package org.milestone.spring.ticket_platform.model;
 
 import java.time.LocalDate;
-
-
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,15 +28,12 @@ public class Ticket {
     private String title;
 
     @Lob
-    @NotBlank(message = "ISBN must not be null or blank")
-    private String description;
+    @NotBlank(message = "Text must not be null or blank")
+    private String text;
 
     @NotNull(message = "Date must not be null")
     @PastOrPresent(message = "Date cannot be in the future")
-    private LocalDate createdAt;
-
-    @NotNull(message = "Date must not be null")
-    private LocalDate updatedAt;
+    private LocalDate creationDate;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -49,6 +46,9 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User operator;
+
+    @OneToMany(mappedBy = "ticket", orphanRemoval = true)
+    private Set<Note> notes;
 
 
     public Integer getId() {
@@ -67,28 +67,20 @@ public class Ticket {
         this.title = title;
     }
 
-    public String getDescription() {
-        return this.description;
+    public String getText() {
+        return this.text;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public LocalDate getCreatedAt() {
-        return this.createdAt;
+    public LocalDate getCreationDate() {
+        return this.creationDate;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 
     public TicketCategory getCategory() {
@@ -115,13 +107,21 @@ public class Ticket {
         this.operator = operator;
     }
 
+    public Set<Note> getNotes() {
+        return this.notes;
+    }
+
+    public void setNotes(Set<Note> notes) {
+        this.notes = notes;
+    }
+
     @Override
     public String toString(){
         return "{" +
             " id='" + getId() + "'" +
-            ", creationDate='" + getCreatedAt() + "'" +
+            ", creationDate='" + getCreationDate() + "'" +
             ", title='" + getTitle() + "'" +
-            ", text='" + getDescription() + "'" +
+            ", text='" + getText() + "'" +
             "}";
     }
 }

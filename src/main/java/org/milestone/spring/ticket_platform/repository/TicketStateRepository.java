@@ -1,5 +1,6 @@
 package org.milestone.spring.ticket_platform.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.milestone.spring.ticket_platform.model.TicketState;
@@ -8,5 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TicketStateRepository extends JpaRepository<TicketState, Integer> {
-    Optional<TicketState> findByName(String name);
+    
+    public List<TicketState> findAll();
+ 
+    public Optional<TicketState> findByName(String name);
 }

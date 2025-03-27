@@ -3,12 +3,22 @@ package org.milestone.spring.ticket_platform.controller;
 import java.util.List;
 
 import org.milestone.spring.ticket_platform.model.Ticket;
-import org.milestone.spring.ticket_platform.repository.TicketRepository;
+import org.milestone.spring.ticket_platform.service.TicketCategoryService;
+import org.milestone.spring.ticket_platform.service.TicketService;
+import org.milestone.spring.ticket_platform.service.TicketStateService;
+import org.milestone.spring.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 @Controller
@@ -16,13 +26,46 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TicketController {
     
     @Autowired
-    private TicketRepository repository;
+    private TicketService ticketService;
+ 
+    @Autowired
+    private TicketCategoryService categoryService;
+ 
+    @Autowired
+    private UserService userService;
+     
+    @Autowired
+    private TicketStateService stateService;
 
-    @GetMapping()
-    public String index(Model model) {
-        List<Ticket> tickets = repository.findAll();
-        model.addAttribute("tickets", tickets);
+    @GetMapping
+    public String tickets(Model model) {
+        List<Ticket> tickets = ticketService.findAll();
+        System.out.println(tickets);
+        model.addAttribute("tickets", ticketService.findAll());
         return "tickets/index";
     }
     
+    @GetMapping("/create")
+     public String formTicket(Model model) {
+         model.addAttribute("ticket", ticketService.newTicket());
+         model.addAttribute("categories", categoryService.findAll());
+         model.addAttribute("users", userService.findAll());
+         return "tickets/create-edit";
+     }
+     
+    @PostMapping("/create")
+    public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+ 
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("ticket", formTicket);
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("users", userService.findAll());
+            model.addAttribute("toDoState", stateService.findByName("to do"));
+            return "tickets/create-edit";
+        }
+        ticketService.save(formTicket);
+         
+        return "redirect:/ticket";
+     }
 }
+
