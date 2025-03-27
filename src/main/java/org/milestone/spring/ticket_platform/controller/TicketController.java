@@ -3,11 +3,13 @@ package org.milestone.spring.ticket_platform.controller;
 import java.util.List;
 
 import org.milestone.spring.ticket_platform.model.Ticket;
+import org.milestone.spring.ticket_platform.model.User;
 import org.milestone.spring.ticket_platform.service.TicketCategoryService;
 import org.milestone.spring.ticket_platform.service.TicketService;
 import org.milestone.spring.ticket_platform.service.TicketStateService;
 import org.milestone.spring.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,11 +41,19 @@ public class TicketController {
     private TicketStateService stateService;
 
     @GetMapping
-    public String tickets(Model model) {
-        List<Ticket> tickets = ticketService.findAll();
-        System.out.println(tickets);
-        model.addAttribute("tickets", ticketService.findAll());
-        return "tickets/index";
+    public String tickets(Authentication authentication , Model model) {
+ 
+    User user = userService.findByUsername(authentication.getName()).get();
+    List<Ticket> tickets;
+    
+    if (user.isAdmin()) {
+        tickets = ticketService.findAll();
+    }else{
+        tickets = user.getTickets();
+    }
+            
+    model.addAttribute("tickets", tickets);
+    return "tickets/index";
     }
     
     @GetMapping("/create")
