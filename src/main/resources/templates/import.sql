@@ -1,3 +1,5 @@
+INSERT INTO categories (name) VALUES ('CRUD'), ('Security'), ('Repository'), ('Controller'), ('Service'), ('REST API'), ('Thymeleaf');
+
 INSERT INTO roles (name) VALUES ("ADMIN");
 
 INSERT INTO roles (name) VALUES ("OPERATOR");
