@@ -66,18 +66,20 @@ public class TicketController {
     }
     
     @GetMapping("/create")
-    public String formTicket(Model model) {
+    public String create(Authentication authentication, Model model) {
+        User user = userService.findByUsername(authentication.getName()).get();
         model.addAttribute("ticket", ticketService.newTicket());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("users", userService.findByState(true));
         model.addAttribute("toDoState", stateService.findByName("to do"));
+        model.addAttribute("user", user);
         return "tickets/create";
     }
      
-    @PostMapping("/create")
-    public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
- 
+    public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
+            User user = userService.findByUsername(authentication.getName()).get();
+            model.addAttribute("user", user);
             model.addAttribute("ticket", formTicket);
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("users", userService.findByState(true));
@@ -92,11 +94,12 @@ public class TicketController {
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id,Authentication authentication, Model model) {
         User user = userService.findByUsername(authentication.getName()).get();
+        Ticket ticket = ticketService.findById(id);
         Note newNote = new Note();
         newNote.setCreationDateTime(LocalDateTime.now());
+        newNote.setTicket(ticket);
         newNote.setAuthor(user);
         
-        Ticket ticket = ticketService.findById(id);
 
         if(!ticketService.checkUser(user, ticket)) return "redirect:/ticket";
         
@@ -105,6 +108,7 @@ public class TicketController {
         model.addAttribute("state", ticket.getState().getName());
         model.addAttribute("category", ticket.getCategory().getName());
         model.addAttribute("newNote", newNote);
+        model.addAttribute("notes", noteService.findByTicket(id));
         System.out.println(ticket.getState().getName());
         
  
@@ -146,17 +150,6 @@ public class TicketController {
         };
         ticketService.save(formTicket);
          
-        return "redirect:/ticket";
-    }
-
-    @PostMapping("/note/create")
-    public String store(@Valid @ModelAttribute("note") Note formNote, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("ticket", formNote);
-            return "tickets/create";
-        };
-        noteService.save(formNote);
-        
         return "redirect:/ticket";
     }
 
