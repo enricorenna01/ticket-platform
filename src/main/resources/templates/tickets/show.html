@@ -6,8 +6,51 @@
      <div class="container">
          <h2>Ticket</h2>
          <div th:replace="~{fragments/ticket-form :: form('show')}"></div>
-         <div th:replace="~{fragments/note :: form}"></div>
-     </div>
+         <button type="button" class="btn btn-dark border-white mt-2" data-bs-toggle="modal" data-bs-target="#commentModal">
+            Add Note
+        </button>
+        
+        <div class="modal fade text-black" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true" th:object="${newNote}">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="commentModalLabel">Add Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <form th:action="@{/note/create}" method="post">
+                    
+                    <div class="mb-3">
+                    <label for="commentText" class="form-label">Note Txt</label>
+                    <textarea id="commentText" class="form-control" rows="3" th:field="*{text}" required></textarea>
+                    </div>
+        
+                    <input type="hidden" th:field="*{id}" value="12345"/>
+                    <input type="hidden" th:field="*{author}" value="*{author}"/>
+                    <input type="hidden" th:field="*{ticket}" value="*{ticket}"/>
+                    <input type="hidden" th:field="*{creationDateTime}" value="*{creationDateTime}"/>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div th:each="note : ${notes}" th:object="${note}">
+            <div class="card mt-2" style="width: 18rem;">
+                <div class="card-header">
+                    <h6 class="card-subtitle mb-2 text-muted">By [[*{author.username}]] | Created on [[${note.getFormattedDate()}]]</h6>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">[[*{text}]]</p>
+                </div>
+                <div class="card-footer text-muted">
+                </div>
+            </div>
+        </div>
+
+    </div>
  
  </body>
  </html>
