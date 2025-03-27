@@ -1,9 +1,12 @@
 package org.milestone.spring.ticket_platform.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.milestone.spring.ticket_platform.model.Note;
 import org.milestone.spring.ticket_platform.model.Ticket;
 import org.milestone.spring.ticket_platform.model.User;
+import org.milestone.spring.ticket_platform.service.NoteService;
 import org.milestone.spring.ticket_platform.service.TicketCategoryService;
 import org.milestone.spring.ticket_platform.service.TicketService;
 import org.milestone.spring.ticket_platform.service.TicketStateService;
@@ -40,6 +43,9 @@ public class TicketController {
     @Autowired
     private TicketStateService stateService;
 
+    @Autowired
+    private NoteService noteService;
+
     @GetMapping
     public String tickets(Authentication authentication , Model model) {
  
@@ -53,6 +59,8 @@ public class TicketController {
     }
             
     model.addAttribute("tickets", tickets);
+    model.addAttribute("user", user);
+    model.addAttribute("canChange", userService.canChange(user));
     return "tickets/index";
     }
     
@@ -81,13 +89,21 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable Integer id, Model model) {
+    public String show(@PathVariable Integer id,Authentication authentication, Model model) {
+        User user = userService.findByUsername(authentication.getName()).get();
+        Note newNote = new Note();
+        newNote.setCreationDateTime(LocalDateTime.now());
+        newNote.setAuthor(user);
+        
         Ticket ticket = ticketService.findById(id);
+        
         model.addAttribute("ticket", ticket);
         model.addAttribute("user", ticket.getOperator());
         model.addAttribute("state", ticket.getState().getName());
         model.addAttribute("category", ticket.getCategory().getName());
+        model.addAttribute("newNote", newNote);
         System.out.println(ticket.getState().getName());
+        
  
         return "tickets/show";
     }
@@ -101,13 +117,15 @@ public class TicketController {
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable Integer id, Model model) {
+    public String edit(@PathVariable Integer id,Authentication authentication, Model model) {
+        User user = userService.findByUsername(authentication.getName()).get();
         Ticket ticket = ticketService.findById(id);
  
         model.addAttribute("ticket", ticket);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("users", userService.findByState(true));
         model.addAttribute("states", stateService.findAll());
+        model.addAttribute("user", user);
  
         return "tickets/edit";
     }
@@ -125,6 +143,24 @@ public class TicketController {
         };
         ticketService.save(formTicket);
          
+        return "redirect:/ticket";
+    }
+
+    @PostMapping("/note/create")
+    public String store(@Valid @ModelAttribute("note") Note formNote, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("ticket", formNote);
+            return "tickets/create";
+        };
+        noteService.save(formNote);
+        
+        return "redirect:/ticket";
+    }
+
+    @PostMapping("/user/{id}/state")
+    public String store(@PathVariable Integer id) {
+        userService.changeState(id);
+        
         return "redirect:/ticket";
     }
 }
